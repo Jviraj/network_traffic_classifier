@@ -1,4 +1,3 @@
-from sklearn.decomposition import PCA
 # Specify the CSV file path
 csv_file_path = 'output_ndpi_training_testing.csv'
 
@@ -22,57 +21,143 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.1, rando
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 weights = np.array([[0.2, 0, 0, 0, 0], [0, 0.3, 0, 0, 0], [0, 0, 0.2, 0, 0], [0, 0, 0, 0.2, 0], [0, 0, 0, 0, 0.1]])
+
 # Fit the StandardScaler on the features from the training set and transform it
 X_train = sc.fit_transform(X_train)
 X_train = np.dot(X_train, weights)
+
 # Apply the transform to the test set
 X_test = sc.transform(X_test)
 X_test = np.dot(X_test, weights)
-# Print the scaled training and test datasets
-# print(X_train)
-# print(X_test)
+
+#logistic regression
+def logisticRegression():
+    from sklearn.linear_model import LogisticRegression
+    classifierLG = LogisticRegression(random_state = 0)
+    classifierLG.fit(X_train, y_train)
+    y_pred = classifierLG.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt =[]
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
+    print(accuracy_score(yt, yp))
 
 #K-NN
-from sklearn.neighbors import KNeighborsClassifier
-classifier = KNeighborsClassifier(n_neighbors=2, metric='minkowski', p=1)
-classifier.fit(X_train, y_train)
+def KNearestNeighbours():
+    from sklearn.neighbors import KNeighborsClassifier
+    classifierKNN = KNeighborsClassifier(n_neighbors=2, metric='minkowski', p=1)
+    classifierKNN.fit(X_train, y_train)
+    y_pred = classifierKNN.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt =[]
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
+    
+    print(accuracy_score(yt, yp))
+
 #SVM
-# from sklearn.svm import SVC
-# classifier = SVC(kernel = 'linear', random_state = 0)
-# classifier.fit(X_train, y_train)
+def SVM():
+    from sklearn.svm import SVC
+    classifierSVM = SVC(kernel = 'linear', random_state = 0)
+    classifierSVM.fit(X_train, y_train)
+    y_pred = classifierSVM.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt = []
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
 
-#Predict the results
-y_pred = classifier.predict(X_test)
-from sklearn.metrics import accuracy_score
-print(accuracy_score(y_test, y_pred))
+    print(accuracy_score(yt, yp))
 
-csv_file_path2 = 'output_ndpi_predicting.csv'
-dataset2 = pd.read_csv(csv_file_path2)
+#Kernel SVM
+def KernelSVM():
+    from sklearn.svm import SVC
+    classifierKSVM = SVC(kernel = 'rbf', random_state = 0)
+    classifierKSVM.fit(X_train, y_train)
+    y_pred = classifierKSVM.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt = []
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
 
-# pca = PCA(n_components=2)
-# X_train_pca = pca.fit_transform(X_train)
-# X_test_pca = pca.transform(X_test)
+    print(accuracy_score(yt, yp))
 
-# # Create the scatter plot for the test data points with predicted categories
-# categories = np.unique(y_test)
-# colors = ['r', 'g', 'b', 'y', 'm', 'c']  # You may need to extend the colors list for more categories
-# plt.figure(figsize=(8, 6))
+#Naive Baeyes
+def NaiveBaeyes():
+    from sklearn.naive_bayes import GaussianNB
+    classifierNB = GaussianNB()
+    classifierNB.fit(X_train, y_train)
+    y_pred = classifierNB.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt = []
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
 
-# for category, color in zip(categories, colors):
-#     mask = y_pred == category
-#     plt.scatter(X_test_pca[mask, 0], X_test_pca[mask, 1], c=color, label=f'Category {category}', alpha=0.7)
+    print(accuracy_score(yt, yp))
 
-# plt.xlabel('Principal Component 1')
-# plt.ylabel('Principal Component 2')
-# plt.title('KNN Algorithm - Scatter Plot with PCA')
-# plt.legend()
-# plt.show()
+#Decision Tree
+def DecisionTree():
+    from sklearn.tree import DecisionTreeClassifier
+    classifierDT = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
+    classifierDT.fit(X_train, y_train)
+    y_pred = classifierDT.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt = []
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
+    
+    print(accuracy_score(yt, yp))
 
-# Separate features and target
-X2 = dataset2.drop('Category', axis = 1)
-print(X2[1])
-y2 = dataset2['Category']
-X3 = sc.fit_transform(X2)
-X2 = np.dot(X2, weights)
-y_pred2 = classifier.predict(X3)
-print(accuracy_score(y2, y_pred2))
+#Random Forest Classifier
+def RandomForestClassifier():
+    from sklearn.ensemble import RandomForestClassifier
+    classifierRF = RandomForestClassifier(n_estimators = 100, criterion = 'entropy', random_state = 0)
+    classifierRF.fit(X_train, y_train)
+    y_pred = classifierRF.predict(X_test)
+    from sklearn.metrics import accuracy_score
+    yt = []
+    yp = []
+    j = -1
+    for i in y_test:
+        j += 1
+        if i=="Network":
+            continue
+        yt.append(i)
+        yp.append(y_pred[j])
+    
+    print(accuracy_score(yt, yp))
