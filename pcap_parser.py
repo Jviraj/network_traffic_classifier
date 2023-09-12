@@ -1,5 +1,5 @@
 # Specify the CSV file path
-csv_file_path = 'output_ndpi_training_testing.csv'
+csv_file_path = '/dataset/output_ndpi_training_testing.csv'
 
 # Import necessary libraries
 import numpy as np
